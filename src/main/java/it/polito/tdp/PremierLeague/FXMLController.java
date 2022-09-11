@@ -5,9 +5,15 @@
 package it.polito.tdp.PremierLeague;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.PremierLeague.model.Model;
+import it.polito.tdp.PremierLeague.model.Player;
+import it.polito.tdp.PremierLeague.model.PlayerBattuto;
+import it.polito.tdp.PremierLeague.model.TopPlayer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -44,17 +50,54 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	txtResult.clear();
+    	try {
+    		double goal = Double.parseDouble(txtGoals.getText());
+    		
+        	this.model.creaGrafo(goal);
+        	txtResult.setText("Grafo creato!\n");
+        	txtResult.appendText("# Vertici " + this.model.getNumVertici() + "\n");
+        	txtResult.appendText("# Archi " + this.model.getNumArchi() + "\n");
+    	} catch (NumberFormatException e) {
+    		txtResult.setText("Per favore inserire un numero minimo di goal valido!\n");
+    		return;
+    	}
     }
 
     @FXML
     void doDreamTeam(ActionEvent event) {
-
+    	txtResult.clear();
+    
+    	try {
+    		int K = Integer.parseInt(txtK.getText());
+    		List<Player> dreamTeam = this.model.calcolaDreamTeam(K);
+    		txtResult.appendText("Il dream team è formato da: \n");
+    		for (Player p : dreamTeam) {
+    			txtResult.appendText(p + "\n");
+    		}
+    	} catch (NumberFormatException e) {
+    		txtResult.appendText("Inserire un numero K di giocatori valido!\n");
+    		return;
+    	}
+    	
     }
 
     @FXML
     void doTopPlayer(ActionEvent event) {
-
+    	txtResult.clear();
+    	TopPlayer topPlayer = this.model.getTopPlayer();
+    	txtResult.setText("TOP PLAYER: " + topPlayer + "\n");
+    	txtResult.appendText("\nAVVERSARI BATTUTI: \n");
+    	List<PlayerBattuto> battuti = new LinkedList<>();
+    	for (Player avversario : topPlayer.getAvversari()) {
+    		int peso = this.model.getPesoArco(topPlayer.getTopPlayer(), avversario);
+    		battuti.add(new PlayerBattuto(avversario, peso));
+    	}
+    	Collections.sort(battuti);
+    	for (PlayerBattuto p : battuti) {
+    		txtResult.appendText(p.getPlayerBattuto() + " | " + p.getPeso() + "\n");
+    	}
+    	
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

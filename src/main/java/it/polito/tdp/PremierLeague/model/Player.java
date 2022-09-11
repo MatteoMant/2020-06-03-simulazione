@@ -1,6 +1,7 @@
 package it.polito.tdp.PremierLeague.model;
 
 public class Player {
+	
 	Integer playerID;
 	String name;
 	
@@ -52,7 +53,5 @@ public class Player {
 	public String toString() {
 		return playerID + " - " + name;
 	}
-	
-	
-	
+
 }
